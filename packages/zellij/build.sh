@@ -8,13 +8,17 @@ TERMUX_PKG_SHA256=1f0bfa13f2dbe657d76341a196f98a3b4caa47ac63abee06b39883a11ca220
 TERMUX_PKG_BUILD_DEPENDS="zlib"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_RUST_VERSION=1.82.0
+TERMUX_PKG_NO_STRIP=true
 
 # wasmer doesn't support these platforms yet
 TERMUX_PKG_BLACKLISTED_ARCHES="arm, i686"
 
 termux_step_make() {
+	cat rust-toolchain.toml
+	rm rust-toolchain.toml
 	termux_setup_rust
-	cargo build --jobs ${TERMUX_PKG_MAKE_PROCESSES} --target ${CARGO_TARGET_NAME} --release
+	cargo build --jobs ${TERMUX_PKG_MAKE_PROCESSES} --target ${CARGO_TARGET_NAME} --release --config profile.release.debug=true --config profile.release.strip=false
 }
 
 termux_step_make_install() {
